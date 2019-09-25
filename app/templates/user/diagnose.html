@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <div class="ui form-user center">
+        <form class="ui form" action="/diagnose" method="post" enctype="multipart/form-data">
+            <h4 class="ui dividing header">Upload your skin photo:</h4>
+            {{ m.render_field(form.upload) }}
+            {{ form.csrf_token }}
+            <button class="ui primary button" type="submit">Diagnose</button>
+        </form>
+    </div>
+
+{% endblock %}

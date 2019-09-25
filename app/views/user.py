@@ -5,10 +5,12 @@ from itsdangerous import URLSafeTimedSerializer
 from app import app, models, db
 from app.forms import user as user_forms
 from app.toolbox import email
+from werkzeug.utils import secure_filename
 # Setup Stripe integration
 import stripe
 import json
 from json import dumps
+import os
 
 stripe_keys = {
 	'secret_key': "sk_test_GvpPOs0XFxeP0fQiWMmk6HYe",
@@ -104,12 +106,23 @@ def signout():
     flash('Succesfully signed out.', 'positive')
     return redirect(url_for('index'))
 
-
 @userbp.route('/account')
 @login_required
 def account():
     return render_template('user/account.html', title='Account')
 
+@app.route('/diagnose', methods=['POST', 'GET'])
+def diagnose():
+    form = user_forms.Diagnose()
+    if form.validate_on_submit():
+        f = form.upload.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(
+            app.instance_path, 'photos', filename
+        ))
+        return redirect(url_for('diagnose'))
+
+    return render_template('user/diagnose.html', form=form, title='Diagnose')
 
 @userbp.route('/forgot', methods=['GET', 'POST'])
 def forgot():
@@ -207,4 +220,3 @@ def paySuccess():
 		db.session.commit()
 		# do anything else on payment success, maybe send a thank you email or update more db fields?
 	return "Response: User with associated email " + str(stripe_email) + " updated on our end (paid)."
-
