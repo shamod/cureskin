@@ -1,5 +1,3 @@
-  GNU nano 2.9.3                                       main.py                                                  
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
