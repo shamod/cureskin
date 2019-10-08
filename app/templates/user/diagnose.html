@@ -1,14 +1,15 @@
 {% extends "layout.html" %}
-
+{% block head %}
+    {{ super() }}
+    {{ dropzone.load_css() }}
+    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 400px;') }}
+{% endblock %}
 {% block content %}
-
     <div class="ui form-user center">
-        <form class="ui form" action="/diagnose" method="post" enctype="multipart/form-data">
-            <h4 class="ui dividing header">Upload your skin photo:</h4>
-            {{ m.render_field(form.upload) }}
-            {{ form.csrf_token }}
-            <button class="ui primary button" type="submit">Diagnose</button>
-        </form>
+        <h4 class="ui dividing header">Upload your skin photo:</h4>
+        {{ dropzone.create(action='diagnose')}}
+        <button class="ui primary button" type="submit">Diagnose</button>
     </div>
-
+    {{ dropzone.load_js() }}
+	{{ dropzone.config() }}
 {% endblock %}

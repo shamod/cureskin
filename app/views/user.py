@@ -1,11 +1,11 @@
-from flask import (Blueprint, render_template, redirect, request, url_for,
-                   abort, flash)
+from flask import (Blueprint, render_template, redirect, request, url_for, abort, flash)
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from itsdangerous import URLSafeTimedSerializer
 from app import app, models, db
 from app.forms import user as user_forms
 from app.toolbox import email
 from werkzeug.utils import secure_filename
+
 # Setup Stripe integration
 import stripe
 import json
@@ -24,7 +24,6 @@ ts = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 # Create a user blueprint
 userbp = Blueprint('userbp', __name__, url_prefix='/user')
-
 
 @userbp.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -113,16 +112,12 @@ def account():
 
 @app.route('/diagnose', methods=['POST', 'GET'])
 def diagnose():
-    form = user_forms.Diagnose()
-    if form.validate_on_submit():
-        f = form.upload.data
-        filename = secure_filename(f.filename)
-        f.save(os.path.join(
-            app.instance_path, 'photos', filename
-        ))
+    if request.method == 'POST':
+        for key, f in request.files.items():
+            if key.startswith('file'):
+                f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
         return redirect(url_for('diagnose'))
-
-    return render_template('user/diagnose.html', form=form, title='Diagnose')
+    return render_template('user/diagnose.html')
 
 @userbp.route('/forgot', methods=['GET', 'POST'])
 def forgot():

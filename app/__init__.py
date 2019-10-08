@@ -1,9 +1,18 @@
 from flask import Flask
+import os
 
 app = Flask(__name__)
 
 # Setup the app with the config.py file
 app.config.from_object('app.config')
+
+app.config.update(
+    UPLOADED_PATH=os.path.join(app.instance_path, 'photos'),
+    # Flask-Dropzone config:
+    DROPZONE_ALLOWED_FILE_TYPE='image',
+    DROPZONE_MAX_FILE_SIZE=3,
+    DROPZONE_MAX_FILES=1,
+)
 
 # Setup the logger
 from app.logger_setup import logger
@@ -25,6 +34,10 @@ toolbar = DebugToolbarExtension(app)
 # Setup the password crypting
 from flask.ext.bcrypt import Bcrypt
 bcrypt = Bcrypt(app)
+
+# Setup flask dropzone
+from flask_dropzone import Dropzone
+dropzone = Dropzone(app)
 
 # Import the views
 from app.views import main, user, error
