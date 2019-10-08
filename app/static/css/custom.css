@@ -15,7 +15,7 @@ body {
 }
 
 #body {
-   margin: 20px;
+   margin: 0 20px;
    min-height: 100%;
 }
 
@@ -48,4 +48,24 @@ body {
 
 .error-box {
    margin-top: 8%;
+}
+
+.hero {
+   min-height: 40rem;
+   display: flex;
+   align-items: center;
+   background: url(https://www.irishexaminer.com/remote/media.central.ie/media/images/s/SkincareGeneric16Sep2018_large.jpg?width=648&s=ie-869369) no-repeat;
+
+   background-size: cover;
+}
+
+@media only screen and (max-width: 1040px) {
+   #body {
+      margin: 0 5px;
+   }
+
+   .hero {
+      min-height: 30rem;
+      background-size: contain;
+   }
 }
