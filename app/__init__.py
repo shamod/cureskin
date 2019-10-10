@@ -1,5 +1,6 @@
 from flask import Flask
 import os
+import time
 
 app = Flask(__name__)
 
@@ -27,9 +28,8 @@ mail = Mail(app)
 
 # Setup the debug toolbar
 from flask_debugtoolbar import DebugToolbarExtension
-app.config['DEBUG_TB_TEMPLATE_EDITOR_ENABLED'] = True
-app.config['DEBUG_TB_PROFILER_ENABLED'] = True
-toolbar = DebugToolbarExtension(app)
+if app.config['DEBUG']:
+    toolbar = DebugToolbarExtension(app)
 
 # Setup the password crypting
 from flask.ext.bcrypt import Bcrypt
@@ -57,3 +57,13 @@ def load_user(email):
     return User.query.filter(User.email == email).first()
 
 from app import admin
+
+# Setup template date filter
+def format_epoch_datetime(value, format='medium'):
+    if format == 'full':
+        format="%Y-%m-%d %H:%M:%S"
+    elif format == 'medium':
+        format="%Y-%m-%d"
+    return time.strftime(format, time.localtime(value))
+
+app.jinja_env.filters['epoch_datetime'] = format_epoch_datetime

@@ -1,10 +1,12 @@
 import logging
 
-from app.config_common import *
-
-
 # DEBUG can only be set to True in a development environment for security reasons
 DEBUG = True
+
+# Flask Debug ToolBar Settings
+DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
+DEBUG_TB_PROFILER_ENABLED = True
+DEBUG_TB_INTERCEPT_REDIRECTS = False
 
 # Secret key for generating tokens
 SECRET_KEY = 'houdini'
@@ -28,7 +30,16 @@ ADMINS = ['flask.boilerplate@gmail.com']
 # Number of times a password is hashed
 BCRYPT_LOG_ROUNDS = 12
 
+# Log Setup
+TIMEZONE = 'Europe/Paris'
 LOG_LEVEL = logging.DEBUG
+LOG_STDOUT = True
 LOG_FILENAME = 'activity.log'
-LOG_MAXBYTES = 1024
+LOG_MAXBYTES = 100000
 LOG_BACKUPS = 2
+
+# Stripe API Settings
+STRIPE_SECRET_KEY = 'sk_test_GvpPOs0XFxeP0fQiWMmk6HYe'
+STRIPE_PUBLIC_KEY = 'pk_test_UU62FhsIB6457uPiUX6mJS5x'
+
+

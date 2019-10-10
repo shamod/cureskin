@@ -7,11 +7,7 @@
 {% block content %}
 
 	<div class="hero">
-		<h1 class="ui header">{{ title }}</h1>
-
-		{% if current_user.is_authenticated %}
-			<h2 class="ui header">Hi {{ current_user.first_name }}!</h2>
-		{% endif %}
+		<h1 class="ui header">Your Personal<br>24/7 Dermatologist</h1>
 	</div>
 	<div class="ui vertical stripe segment">
 		<div class="ui middle aligned stackable grid container">
@@ -21,6 +17,9 @@
 					<p>Our AI-based solution will diagnose your skin like a dermatalogist does and tell you what is wrong.</p>
 					<h3 class="ui header">You never have to wait for months for a doctor's visit</h3>
 					<p>Our solution is available for you instantly and can serve you anywhere.</p>
+					<h3 class="ui header">Simple Pricing</h3>
+					<p>Just <a href="{{ url_for('userbp.signup') }}">signup</a> and buy 10 credits for $10.
+						Each diagnosis will use 1 credit and you can easily buy more if required.</p>
 				</div>
 			</div>
 		</div>

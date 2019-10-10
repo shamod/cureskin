@@ -1,27 +1,31 @@
-from flask import render_template, jsonify
+from flask import render_template, flash, request
+from flask.ext.login import login_required
 from app import app
-import random
-
+from app.forms import contact as contact_forms
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', title='Cure Your Skin with Artificial Intelligence')
+    return render_template('index.html', title='Your Personal 24/7 Dermatologist')
 
-
-@app.route('/map')
-def map():
-    return render_template('map.html', title='Map')
-
-
-@app.route('/map/refresh', methods=['POST'])
-def map_refresh():
-    points = [(random.uniform(48.8434100, 48.8634100),
-               random.uniform(2.3388000, 2.3588000))
-              for _ in range(random.randint(2, 9))]
-    return jsonify({'points': points})
-
-
-@app.route('/contact')
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
-    return render_template('contact.html', title='Contact')
+    form = contact_forms.ContactUs()
+    if form.validate_on_submit():
+        flash('Your Message Has Been Sent To The Team', 'positive')
+
+    return render_template('contact.html', form=form, title='Contact Us')
+
+@app.route('/diagnose', methods=['POST', 'GET'])
+@login_required
+def diagnose():
+    if request.method == 'POST':
+        filecount=0
+        for key, f in request.files.items():
+            if key.startswith('file'):
+                filecount += 1
+                f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
+
+        flash(f"Uploaded {filecount} files")
+        return redirect(url_for('diagnose'))
+    return render_template('user/diagnose.html', key=stripe_keys['publishable_key'])

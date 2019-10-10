@@ -1,17 +1,17 @@
- {% extends "layout.html" %}
+{% extends "layout.html" %}
 {% block content %}
-  <form action="/user/charge" method="post">
-    <article>
-      <label>
-        <span>Amount is $5.00</span>
-      </label>
-    </article>
+  <br/>
+  <h1>Buy More Credits</h1><br/>
+  <p>You currently have {{ user.credits }} diagnosis credits left. You can buy a pack of 10 credits for only $10 using the button below:</p>
+  <form action="{{ url_for('userbp.charge') }}" method="post">
 
     <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
             data-key="{{ key }}"
-            data-description="A Flask Charge"
-            data-amount="500"
-	    data-email="{{ email }}"
-            data-locale="auto"></script>
+            data-description="Cure Skin Credits"
+            data-amount="1000"
+	        data-email="{{ user.email }}"
+            data-locale="auto"
+            data-image="{{ url_for('static', filename='img/CureSkin_Icon.png') }}">
+    </script>
   </form>
 {% endblock %}

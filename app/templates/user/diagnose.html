@@ -11,79 +11,83 @@
     <link rel="stylesheet" href="./static/dist/dropzone.css" />
 {% endblock %}
 {% block content %}
-    <div class="ui form-user center">
-        <h4 class="ui dividing header">Upload your skin photo:</h4>
-        <form enctype="multipart/form-data" method="POST">
-            <div class="dropzone" id="my-dropzone">
-            </div>
-            <button id="upload-btn" class="ui primary button" type="submit">Diagnose</button>
-        </form> 
-    </div>
-    <div id="status">
-        <br>
-        <div class="alert alert-primary" id="alert" role="alert"></div>
-    </div>
-    <script src="./static/dist/dropzone.js"></script>
-    <script src="https://checkout.stripe.com/checkout.js"></script>
-    <script>
-        
-        Dropzone.options.myDropzone = {
-            url: 'diagnose',
-            autoProcessQueue: false,
-            uploadMultiple: false,
-            parallelUploads: 5,
-            maxFiles: 1,
-            maxFilesize: 3,
-            acceptedFiles: 'image/*',
-            addRemoveLinks: true,
-            init: function() {
-                dzClosure = this; // Makes sure that 'this' is understood inside the functions below.
-                var handler = StripeCheckout.configure({
-                    key: "{{ key }}",
-                    image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-                    locale: "auto",
-                    token: function(token) {
-                        fetch('/user/charge', {
-                            method: 'POST',
-                            headers: { "Content-Type": "application/json"},
-                            body: JSON.stringify({
-                                stripeToken: token.id,
-                                amount: 999,
-                                description: "Skin Diagnosis Charge"
+    {% if current_user.credits > 0 %}
+        <div class="ui form-user center">
+            <h4 class="ui dividing header">Upload your skin photo:</h4>
+            <form enctype="multipart/form-data" method="POST" action="{{ url_for('diagnose') }}"
+                    id="id_dropzone" class="dropzone" >
+                    <button id="upload-btn">Diagnose</button>
+            </form>
+        </div>
+        <div id="status">
+            <br>
+            <div class="alert alert-primary" id="alert" role="alert"></div>
+        </div>
+        <script src="./static/dist/dropzone.js"></script>
+        <script src="https://checkout.stripe.com/checkout.js"></script>
+        <script>
+
+            Dropzone.options.myDropzone = {
+                url: 'diagnose',
+                autoProcessQueue: false,
+                uploadMultiple: false,
+                parallelUploads: 5,
+                maxFiles: 1,
+                maxFilesize: 3,
+                acceptedFiles: 'image/*',
+                addRemoveLinks: true,
+                init: function() {
+                    dzClosure = this; // Makes sure that 'this' is understood inside the functions below.
+                    var handler = StripeCheckout.configure({
+                        key: "{{ key }}",
+                        image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+                        locale: "auto",
+                        token: function(token) {
+                            fetch('/user/charge', {
+                                method: 'POST',
+                                headers: { "Content-Type": "application/json"},
+                                body: JSON.stringify({
+                                    stripeToken: token.id,
+                                    amount: 999,
+                                    email: "{{ current_user.email }}",
+                                    description: "Skin Diagnosis Charge"
+                                })
                             })
-                        })
-                        .then(function(response) {
-                            if (response.ok) {
-                                dzClosure.processQueue();
-                                return response.ok;
-                            } else {
-                            throw new Error('Something went wrong.');
-                            }
-                        })
-                        .catch(function(err) {
-                            if (err) {
-                                // update the alert message
-                                document.getElementById("alert").innerText = "Something went wrong."
-                                // show the bootstrap alert
-                                document.getElementById("status").style.display = "inline";
-                            }
-                        });
-                    }
-                });
-                document.getElementById("upload-btn").addEventListener("click", function(e) {
-                    // Open Checkout with further options:
-                    handler.open({
-                        name: "CureSkin",
-                        description: "Skin Diagonsis Charge",
-                        amount: 999
+                            .then(function(response) {
+                                if (response.ok) {
+                                    dzClosure.processQueue();
+                                    return response.ok;
+                                } else {
+                                throw new Error('Something went wrong.');
+                                }
+                            })
+                            .catch(function(err) {
+                                if (err) {
+                                    // update the alert message
+                                    document.getElementById("alert").innerText = "Something went wrong."
+                                    // show the bootstrap alert
+                                    document.getElementById("status").style.display = "inline";
+                                }
+                            });
+                        }
                     });
-                    e.preventDefault();
-                });
-                window.addEventListener("popstate", function() {
-                    handler.close();
-                });
+                    document.getElementById("upload-btn").addEventListener("click", function(e) {
+                        // Open Checkout with further options:
+                        handler.open({
+                            name: "CureSkin",
+                            description: "Skin Diagonsis Charge",
+                            amount: 999
+                        });
+                        e.preventDefault();
+                    });
+                    window.addEventListener("popstate", function() {
+                        handler.close();
+                    });
+                }
             }
-        }
-    </script>
+        </script>
+    {% else %}
+        Please buy some credits <a href="{{ url_for('pay') }}">here</a>.
+    {% endif %}
 
 {% endblock %}

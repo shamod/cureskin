@@ -4,7 +4,7 @@
 	<body id="container">
    		<div id="header">
    			{% block head %}
-				<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
+				<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width'/>
 				<meta charset="UTF-8">
 				<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 				<!-- jQuery -->
@@ -23,24 +23,34 @@
 				<title>{{ title }}</title>
 				<!-- Navbar -->
 				<div class="ui attached inverted menu">
-					{{ m.nav_link('index', 'Cure Skin') }}
-					{{ m.nav_link('contact', 'About Us') }}
+					<a class="item" href="{{ url_for('index') }}"><img src="/static/img/CureSkin_Logo_Menu.png" class="logo" /></a>
+					{{ m.nav_link('contact', 'Contact Us') }}
+					<!-- User is logged in -->
+				    {% if current_user.is_authenticated %}
+						{{ m.nav_link('diagnose', 'Diagnose') }}
+					{% endif %}
 				 	<div class="right menu">
 				 		<!-- User is logged in -->
 				      	{% if current_user.is_authenticated %}
+							<div class="item">
+								<span class="credits_display">Credits: {{ current_user.credits }}</span>
+							</div>
+							<div class="item">
+								<a class="ui primary button" href="{{ url_for('userbp.pay') }}">Buy Credits</a>
+							</div>
 				      		<div class="item">
-				        		<a class="ui primary button" href="/user/account">{{ current_user.full_name }}</a>
+				        		<a class="item" href="{{ url_for('userbp.account') }}">{{ current_user.full_name }}</a>
 				    		</div>
 				    		<div class="item">
-				        		<a class="ui default button" href="/user/signout">Sign out</a>
+				        		<a class="ui default button" href="{{ url_for('userbp.signout') }}">Sign out</a>
 				    		</div>
 			          	<!-- User is not logged in -->
 			          	{% else %}
 			          		<div class="item">
-				        		<a class="ui primary button" href="/user/signin">Sign in</a>
+				        		<a class="ui primary button" href="{{ url_for('userbp.signin') }}">Sign in</a>
 				    		</div>
 				    		<div class="item">
-				        		<a class="ui default button" href="/user/signup">Sign up</a>
+				        		<a class="ui default button" href="{{ url_for('userbp.signup') }}">Sign up</a>
 				    		</div>
 						{% endif %}
 			  		</div>

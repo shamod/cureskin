@@ -15,8 +15,9 @@ class User(db.Model, UserMixin):
     phone = db.Column(db.String)
     email = db.Column(db.String, primary_key=True)
     confirmation = db.Column(db.Boolean)
-    paid = db.Column(db.Boolean)
+    credits = db.Column(db.Integer, default=0)
     _password = db.Column(db.String)
+    stripeId = db.Column(db.String)
 
     @property
     def full_name(self):
@@ -36,6 +37,9 @@ class User(db.Model, UserMixin):
     def get_id(self):
         return self.email
 
-    def is_paid(self):
-        return self.paid
+    def get_credits(self):
+        return self.credits
+
+    def add_credits(self, credits):
+        self.credits += credits
 

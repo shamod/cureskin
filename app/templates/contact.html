@@ -6,10 +6,15 @@
 
 {% block content %}
 
-	<h1 class="ui header">{{ title }}</h1>
-
-	{% if current_user.is_authenticated %}
-	  	<h2 class="ui header">Hi {{ current_user.name }}!</h2>
-	{% endif %}
+	<div class="ui form-user center raised very padded text container segment">
+		<form class="ui form" action="/contact" method="post">
+			<h4 class="ui dividing header">Contact Us</h4>
+	    	{{ m.render_field(form.name) }}
+	    	{{ m.render_field(form.email) }}
+	    	{{ m.render_field(form.message) }}
+		  	{{ form.csrf_token }}
+		  	<button class="ui primary button" type="submit">Submit</button>
+		</form>
+	</div>
 
 {% endblock %}

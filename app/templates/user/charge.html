@@ -1,4 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
-  <h2>Thanks, you paid <strong>$5.00</strong>!</h2>
+  {% if success %}
+    <h2>Thanks, you paid $10.00. You now have <strong>{{ current_user.credits }}</strong> credits!</h2>
+    <p><a href="{{ url_for('diagnose') }}">Run a Diagnosis Now.</a></p>
+  {% else %}
+    Unfortunately there was an issue processing your payment. Please try again or contact one of our team for assistance.
+  {% endif %}
 {% endblock %}

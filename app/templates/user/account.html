@@ -6,6 +6,47 @@
 
 {% block content %}
 
-    <h1 class="ui header">Hi {{ current_user.full_name }}!</h1>
+    <br/><br/>
+    <h1>Account Profile:</h1>
+    <table>
+        <tr>
+            <td><strong>First Name&emsp;</strong></td>
+            <td>{{ current_user.first_name }}</td>
+        </tr>
+        <tr>
+            <td><strong>First Name</strong></td>
+            <td>{{ current_user.last_name }}</td>
+        </tr>
+        <tr>
+            <td><strong>Email</strong></td>
+            <td>{{ current_user.email }}</td>
+        </tr>
+        <tr>
+            <td><strong>Credits</strong></td>
+            <td>{{ current_user.credits }}</td>
+        </tr>
+    </table>
+
+    <h2>Payment History:</h2>
+    <table>
+        <thead>
+            <td>Date</td>
+            <td>Amount</td>
+            <td>Card</td>
+            <td>Receipt</td>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.created | epoch_datetime }}&emsp;</td>
+                <td>${{ payment.amount / 100 }}&emsp;</td>
+                <td>4242&emsp;</td>
+                <td><a href="{{ payment.receipt_url }}" target="_blank">Receipt</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    </table>
 
 {% endblock %}

@@ -26,6 +26,15 @@ body {
    text-align: center;
 }
 
+.credits_display {
+    padding: 15px;
+    font-weight: bold;
+}
+
+.logo {
+    width: 200px !important;
+}
+
 /* Forms */
 
 .form-user {
@@ -42,6 +51,7 @@ body {
 
 .flash {
    margin-right: 20px !important;
+   list-style-type: none;
 }
 
 /* Errors */
@@ -54,9 +64,14 @@ body {
    min-height: 40rem;
    display: flex;
    align-items: center;
-   background: url(https://www.irishexaminer.com/remote/media.central.ie/media/images/s/SkincareGeneric16Sep2018_large.jpg?width=648&s=ie-869369) no-repeat;
-
+   background: url(/static/img/hero.jpg) no-repeat;
    background-size: cover;
+}
+
+.hero h1{
+    color: grey !important;
+    padding-left: 30px !important;
+    font-size: 4em !important;
 }
 
 @media only screen and (max-width: 1040px) {
