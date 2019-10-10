@@ -117,7 +117,7 @@ def diagnose():
             if key.startswith('file'):
                 f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
         return redirect(url_for('diagnose'))
-    return render_template('user/diagnose.html')
+    return render_template('user/diagnose.html', key=stripe_keys['publishable_key'])
 
 @userbp.route('/forgot', methods=['GET', 'POST'])
 def forgot():
@@ -179,20 +179,18 @@ def pay():
 @app.route('/user/charge', methods=['POST'])
 @login_required
 def charge():
-    # Amount in cents
-    amount = 500
-    customer = stripe.Customer.create(email=current_user.email, source=request.form['stripeToken'])
+    customer = stripe.Customer.create(email=current_user.email, source=request.json['stripeToken'])
     charge = stripe.Charge.create(
         customer=customer.id,
-        amount=amount,
+        amount=request.json['amount'],
         currency='usd',
-        description='Service Plan'
+        description=request.json['description']
     )
     user = models.User.query.filter_by(email=current_user.email).first()
     user.paid = 1
     db.session.commit()
     # do anything else, like execute shell command to enable user's service on your app
-    return render_template('user/charge.html', amount=amount)
+    return redirect(url_for('diagnose'))
 
 @app.route('/api/payFail', methods=['POST', 'GET'])
 def payFail():
