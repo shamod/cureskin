@@ -1,36 +1,65 @@
-import tensorflow as tf
-import logging
+# Remove Tensorflow FutureWarnings that were filling up logs
+import warnings
+warnings.filterwarnings('ignore',category=FutureWarning)
 
-log = logging.getLogger('PredictAPI')
+import tensorflow as tf
+from werkzeug.datastructures import FileStorage
+
+from app import app
 
 class PredictAPI(object):
 
-    def __init__(self, modelPath: str):
+    def __top_2_accuracy(self, y_true, y_pred):
+        tf.keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=2)
+
+    def __top_3_accuracy(self, y_true, y_pred):
+        tf.keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
+
+    def __init__(self, modelPath: str = './model/model.h5'):
         """
         Initalises API with Tensorflow model to load
 
-        :param modelPath:   The file path to the TF model
+        :param modelPath:   The file path to the TF model.
         """
         self.modelPath = modelPath
 
-        # Load the model file
-        self.model = tf.keras.models.load_model(modelPath)
+        # Load the model file - for some reason model requires custom metric functions
+        #tf.keras.metrics.top_3_accuracy = self.__top_3_accuracy
+        #tf.keras.metrics.top_2_accuracy = self.__top_2_accuracy
 
-        log.info(f"Loaded model {modelPath}:\n{self.model.summary()}")
+        self.model = tf.keras.models.load_model(modelPath,
+                                custom_objects={'top_2_accuracy': self.__top_2_accuracy,
+                                                'top_3_accuracy': self.__top_3_accuracy})
+        print(self.model.summary())
 
-    def predict(self, img: str):
+
+        app.logger.info(f"Loaded model {modelPath}:\n{self.model.summary()}")
+
+    def predict(self, img: FileStorage):
         """
         Make a skin diagnosis prediction from an image
 
         :param img:     The image to classify by the model
         :return:        The prediction
         """
+        app.logger.debug(f"Predicting file {img.filename}")
 
-        prediction =  self.model.predict(img)
-        log.debug(f"Prediction: {prediction}")
+        #prediction = self.model.predict(img)
+        prediction = None
+
+        # diagnosis = Diagnosis(
+        #     time=int(time.time()),
+        #     filename=img.filename,
+        #     img=img.read(),
+        #     prediction=1,
+        #     certainty=0.953
+        # )
+
+        app.logger.debug(f"Prediction: {prediction}")
         return prediction
 
-    def getClass(self, prediction: int):
+    @staticmethod
+    def getClass(prediction: int):
 
         classes = [
             {

@@ -7,7 +7,6 @@ from app.toolbox import email
 
 # Setup Stripe integration
 import stripe
-import os
 
 stripe_keys = {
 	'secret_key': app.config['STRIPE_SECRET_KEY'],
@@ -110,7 +109,10 @@ def signout():
 @userbp.route('/account')
 @login_required
 def account():
-    charges = stripe.Charge.list(customer=current_user.stripeId)
+    if current_user.stripeId:
+        charges = stripe.Charge.list(customer=current_user.stripeId)
+    else:
+        charges = []
     return render_template('user/account.html', title='Account', payments=charges)
 
 @userbp.route('/forgot', methods=['GET', 'POST'])
@@ -178,13 +180,13 @@ def charge():
         if not current_user.stripeId:
             customer = stripe.Customer.create(email=current_user.email, source=stripeToken)
             current_user.stripeId = customer['id']
-        else:
-            charge = stripe.Charge.create(
-                customer=current_user.stripeId,
-                amount=1000,
-                currency='usd',
-                description="10 Skin Care Credits"
-            )
+
+        charge = stripe.Charge.create(
+            customer=current_user.stripeId,
+            amount=1000,
+            currency='usd',
+            description="10 Skin Care Credits"
+        )
         if charge.paid:
             current_user.add_credits(10)
             db.session.commit()

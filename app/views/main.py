@@ -1,5 +1,4 @@
-from flask import render_template, flash, request
-from flask.ext.login import login_required
+from flask import render_template, flash
 from app import app
 from app.forms import contact as contact_forms
 
@@ -15,17 +14,3 @@ def contact():
         flash('Your Message Has Been Sent To The Team', 'positive')
 
     return render_template('contact.html', form=form, title='Contact Us')
-
-@app.route('/diagnose', methods=['POST', 'GET'])
-@login_required
-def diagnose():
-    if request.method == 'POST':
-        filecount=0
-        for key, f in request.files.items():
-            if key.startswith('file'):
-                filecount += 1
-                f.save(os.path.join(app.config['UPLOADED_PATH'], f.filename))
-
-        flash(f"Uploaded {filecount} files")
-        return redirect(url_for('diagnose'))
-    return render_template('diagnose.html')

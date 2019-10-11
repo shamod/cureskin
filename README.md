@@ -7,6 +7,26 @@
 Cure Skin is a Python Flask app using a Tensorflow DNN model trained to classify skin conditions from a picture and give
 a diagnosis with suggested information the user can use to learn more.
 
+## Model
+
+The collab notebook used [Skin Cancer MNIST: HAM10000](https://www.kaggle.com/kmader/skin-cancer-mnist-ham10000) Kaggle dataset
+for training and testing the model using Tensorflow. 
+
+The model uses transfer learning with MobileNet model, to retrain the model to classify the following classes of skin conditions:
+
+* Melanoma
+* Melanocytic Nevi
+* Actinic Keratoses (Solar Keratoses) or Intraepithelial Carcinoma
+* Benign Keratosis
+* Basal Cell Carcinoma
+* Dermatofibroma
+* Vascular Skin Lesion
+
+The current model has a prediction accuracy of around 86%. While high, there is a class imbalance in the Kaggle dataset and the accuracy could 
+be improved with more samples for the lesser weighted classes in our dataset.
+
+The notebook and some sample test images can be found under the `/model` folder of this repository. The saved model is around 28MB and 
+can be found at `/app/predict_api/model.h5` in this repository where its used for serving predictions to the user in the Flask app.
 
 ## Walk Through
 

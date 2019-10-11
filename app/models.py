@@ -2,6 +2,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from flask.ext.login import UserMixin
 
 from app import db, bcrypt
+from app.predict_api import PredictAPI
 
 
 class User(db.Model, UserMixin):
@@ -18,6 +19,7 @@ class User(db.Model, UserMixin):
     credits = db.Column(db.Integer, default=0)
     _password = db.Column(db.String)
     stripeId = db.Column(db.String)
+    diagnoses = db.relationship("Diagnosis", order_by="desc(Diagnosis.id)")
 
     @property
     def full_name(self):
@@ -42,4 +44,30 @@ class User(db.Model, UserMixin):
 
     def add_credits(self, credits):
         self.credits += credits
+
+    def use_credit(self):
+        self.credits -= 1
+
+
+class Diagnosis(db.Model):
+
+    ''' A list of all the diagnosises run using the model. '''
+
+    __tablename__ = 'diagnoses'
+
+    id = db.Column(db.Integer, primary_key=True)
+    uid = db.Column(db.String, db.ForeignKey('users.email'))
+    time = db.Column(db.Integer)
+    prediction = db.Column(db.Integer)
+    certainty = db.Column(db.Float)
+    filename = db.Column(db.String)
+    img = db.Column(db.Binary)
+
+    @property
+    def title(self):
+        return PredictAPI.getClass(self.prediction)['name']
+
+    @property
+    def url(self):
+        return PredictAPI.getClass(self.prediction)['url']
 

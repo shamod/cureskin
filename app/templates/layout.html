@@ -33,7 +33,7 @@
 				 		<!-- User is logged in -->
 				      	{% if current_user.is_authenticated %}
 							<div class="item">
-								<span class="credits_display">Credits: {{ current_user.credits }}</span>
+								<span class="credits_display" id="credit-counter">Credits: {{ current_user.credits }}</span>
 							</div>
 							<div class="item">
 								<a class="ui primary button" href="{{ url_for('userbp.pay') }}">Buy Credits</a>
