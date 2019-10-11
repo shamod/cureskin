@@ -46,7 +46,10 @@ The user can view a list of their purchases on their user account page:
 ![Signup Page](./screenshots/user_account.png)
 
 Once credits have been added to the account, the user can click on the 'Diagnosis' tab to
-begin uploading images and receiving diagnosises from the AI model:
+begin uploading images and receiving diagnosises from the AI model. They also have access to
+a full history of all their previous diagnoses too:
+
+![Diagnosis Page](./screenshots/diagnosis_start.png)
 
 ## Setup
 
