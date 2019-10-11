@@ -28,4 +28,4 @@ def diagnose():
 
         flash(f"Uploaded {filecount} files")
         return redirect(url_for('diagnose'))
-    return render_template('user/diagnose.html', key=stripe_keys['publishable_key'])
+    return render_template('diagnose.html')

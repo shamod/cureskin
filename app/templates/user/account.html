@@ -6,47 +6,57 @@
 
 {% block content %}
 
-    <br/><br/>
-    <h1>Account Profile:</h1>
-    <table>
-        <tr>
-            <td><strong>First Name&emsp;</strong></td>
-            <td>{{ current_user.first_name }}</td>
-        </tr>
-        <tr>
-            <td><strong>First Name</strong></td>
-            <td>{{ current_user.last_name }}</td>
-        </tr>
-        <tr>
-            <td><strong>Email</strong></td>
-            <td>{{ current_user.email }}</td>
-        </tr>
-        <tr>
-            <td><strong>Credits</strong></td>
-            <td>{{ current_user.credits }}</td>
-        </tr>
-    </table>
-
-    <h2>Payment History:</h2>
-    <table>
-        <thead>
-            <td>Date</td>
-            <td>Amount</td>
-            <td>Card</td>
-            <td>Receipt</td>
-        </thead>
-        <tbody>
-            {% for payment in payments %}
-            <tr>
-                <td>{{ payment.created | epoch_datetime }}&emsp;</td>
-                <td>${{ payment.amount / 100 }}&emsp;</td>
-                <td>4242&emsp;</td>
-                <td><a href="{{ payment.receipt_url }}" target="_blank">Receipt</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    </table>
+    <div class="ui grid">
+        <div class="row">
+            <div class="eight wide column">
+                <h2>Account Profile</h2>
+                <table class="ui celled table">
+                    <tbody>
+                    <tr>
+                        <td><strong>First Name</strong></td>
+                        <td>{{ current_user.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>First Name</strong></td>
+                        <td>{{ current_user.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email</strong></td>
+                        <td>{{ current_user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Credits</strong></td>
+                        <td>{{ current_user.credits }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="eight wide column">
+                <h2>Payment History</h2>
+                <table class="ui celled table">
+                    <thead><tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Card</th>
+                        <th>Credits Added</th>
+                        <th>Receipt</th>
+                    </tr></thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td data-label="Date">{{ payment.created | epoch_datetime('full') }}&emsp;</td>
+                            <td data-label="Amount">${{ payment.amount / 100 }}&emsp;</td>
+                            <td data-label="Card">**** **** **** 4242</td>
+                            <td data-label="Credits Added">10</td>
+                            <td data-label="Receipt"><a href="{{ payment.receipt_url }}" target="_blank">View</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

@@ -61,7 +61,7 @@ from app import admin
 # Setup template date filter
 def format_epoch_datetime(value, format='medium'):
     if format == 'full':
-        format="%Y-%m-%d %H:%M:%S"
+        format="%Y-%m-%d %H:%M"
     elif format == 'medium':
         format="%Y-%m-%d"
     return time.strftime(format, time.localtime(value))
