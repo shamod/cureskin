@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 # Setup the app with the config.py file
 app.config.from_object('app.config')
+app.config.from_pyfile('config_prod.py')
 
 # Setup the logger
 from app.logger_setup import logger
@@ -19,6 +20,7 @@ mail = Mail(app)
 
 # Setup the debug toolbar
 from flask_debugtoolbar import DebugToolbarExtension
+print(app.config['DEBUG'])
 if app.config['DEBUG']:
     toolbar = DebugToolbarExtension(app)
 
