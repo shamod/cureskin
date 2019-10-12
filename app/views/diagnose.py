@@ -5,6 +5,8 @@ import time
 from app import app, models, db
 from app.predict_api import PredictAPI
 
+model = PredictAPI()
+
 @app.route('/diagnose')
 @login_required
 def diagnose():
@@ -48,7 +50,6 @@ def predict():
         app.logger.debug(f"File uploaded for prediction: {file.filename}")
 
         # Initalise prediction class
-        model = PredictAPI()
         predict_class, predict_certainty = model.predict(file)
         file.seek(0)
 
