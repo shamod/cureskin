@@ -50,6 +50,7 @@ def predict():
         # Initalise prediction class
         model = PredictAPI()
         predict_class, predict_certainty = model.predict(file)
+        file.seek(0)
 
         prediction = models.Diagnosis(
             uid=current_user.email,
