@@ -28,6 +28,13 @@ be improved with more samples for the lesser weighted classes in our dataset.
 The notebook and some sample test images can be found under the `/model` folder of this repository. The saved model is around 28MB and 
 can be found at `/app/predict_api/model.h5` in this repository where its used for serving predictions to the user in the Flask app.
 
+## Try Out Live Version
+
+https://cureskin.onrender.com
+
+The Stripe API is in test mode so you can use 4242 4242 4242 4242 for the card number to add credits to your
+account.
+
 ## Walk Through
 
 The user first lands on the home page and signs up for a new account, where they can buy credits to use for diagnosises of 
@@ -50,6 +57,8 @@ begin uploading images and receiving diagnosises from the AI model. They also ha
 a full history of all their previous diagnoses too:
 
 ![Diagnosis Page](./screenshots/diagnosis_start.png)
+![Diagnosis Page](./screenshots/diagnosis_running.png)
+![Diagnosis Page](./screenshots/diagnosis_finish.png)
 
 ## Setup
 
