@@ -28,7 +28,7 @@ model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=[ca
 
 from keras.preprocessing import image
 
-test_image = image.load_img(dir + 'test_imgs/ISIC_0029358_Bkl.jpg', target_size = (224, 224))
+test_image = image.load_img(dir + 'test_imgs/ISIC_0024702_Mel.jpg', target_size = (224, 224))
 test_image = image.img_to_array(test_image)
 test_image = np.expand_dims(test_image, axis = 0)
 
@@ -47,5 +47,5 @@ CANCER_CLASSES = {
 
 i = 0
 for result in np.nditer(prediction):
-    print(f"{i}. {CANCER_CLASSES[i]}: {result * 100}%")
+    print(f"{i}. {CANCER_CLASSES[i]}: {round(result * 100, 2)}%")
     i += 1

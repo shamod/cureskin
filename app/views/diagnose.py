@@ -49,16 +49,15 @@ def predict():
 
         # Initalise prediction class
         model = PredictAPI()
-        model.predict(file)
-
+        predict_class, predict_certainty = model.predict(file)
 
         prediction = models.Diagnosis(
             uid=current_user.email,
             time=int(time.time()),
             filename=file.filename,
             img=file.read(),
-            prediction=1,
-            certainty=0.953
+            prediction=predict_class,
+            certainty=predict_certainty
         )
 
         # Insert the diagnosis in the database

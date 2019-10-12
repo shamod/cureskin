@@ -7,7 +7,6 @@ Flask-Mail==0.9.1
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.1
 Flask-WTF==0.13
-Flask-Dropzone==1.5.4
 gunicorn==19.4.5
 itsdangerous==0.24
 pytz==2016.10
@@ -17,3 +16,5 @@ WTForms==2.1
 stripe==2.21.0
 # App Specific
 tensorflow==1.14.0
+Keras==2.3.0
+Flask-Dropzone==1.5.4

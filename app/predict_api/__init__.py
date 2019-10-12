@@ -3,6 +3,8 @@ import warnings
 warnings.filterwarnings('ignore',category=FutureWarning)
 
 import tensorflow as tf
+from keras.preprocessing import image
+import numpy as np
 from werkzeug.datastructures import FileStorage
 
 from app import app
@@ -10,10 +12,10 @@ from app import app
 class PredictAPI(object):
 
     def __top_2_accuracy(self, y_true, y_pred):
-        tf.keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=2)
+        return tf.keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=2)
 
     def __top_3_accuracy(self, y_true, y_pred):
-        tf.keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
+        return tf.keras.metrics.top_k_categorical_accuracy(y_true, y_pred, k=3)
 
     def __init__(self, modelPath: str = './model/model.h5'):
         """
@@ -23,40 +25,57 @@ class PredictAPI(object):
         """
         self.modelPath = modelPath
 
-        # Load the model file - for some reason model requires custom metric functions
-        #tf.keras.metrics.top_3_accuracy = self.__top_3_accuracy
-        #tf.keras.metrics.top_2_accuracy = self.__top_2_accuracy
-
+        # Load the model file - requires custom metric functions
         self.model = tf.keras.models.load_model(modelPath,
-                                custom_objects={'top_2_accuracy': self.__top_2_accuracy,
+                                custom_objects={'categorical_accuracy': tf.keras.metrics.categorical_accuracy,
+                                                'top_2_accuracy': self.__top_2_accuracy,
                                                 'top_3_accuracy': self.__top_3_accuracy})
-        print(self.model.summary())
 
+        # We grab a reference to the graph to ensure no threading issues
+        # While running the prediction
+        self.graph = tf.compat.v1.get_default_graph()
 
-        app.logger.info(f"Loaded model {modelPath}:\n{self.model.summary()}")
+        app.logger.info(f"Loaded model {modelPath}")
 
     def predict(self, img: FileStorage):
         """
         Make a skin diagnosis prediction from an image
 
         :param img:     The image to classify by the model
-        :return:        The prediction
+        :return:        The highest prediction class and certainty
         """
         app.logger.debug(f"Predicting file {img.filename}")
 
-        #prediction = self.model.predict(img)
-        prediction = None
+        # Pre-process image
+        input_image = image.load_img(img, target_size=(224, 224))
+        input_image = image.img_to_array(input_image)
+        input_image = np.expand_dims(input_image, axis=0)
 
-        # diagnosis = Diagnosis(
-        #     time=int(time.time()),
-        #     filename=img.filename,
-        #     img=img.read(),
-        #     prediction=1,
-        #     certainty=0.953
-        # )
 
-        app.logger.debug(f"Prediction: {prediction}")
-        return prediction
+        # Make sure we run prediction thread safe
+        with self.graph.as_default():
+            prediction = self.model.predict(input_image)
+
+        # Get index of predicted class and Record prediction results in logs
+        i = 0
+        predicted_class = 0
+        predicted_certainty = 0.0
+        results = ""
+        for result in np.nditer(prediction):
+
+            certainty = round(result * 100, 2)
+
+            if certainty > predicted_certainty:
+                predicted_certainty = certainty
+                predicted_class = i
+
+            results += f"{i}. {PredictAPI.getClass(i)['name']}: {certainty}%\n"
+            i += 1
+        results += f"\nDiagnosis: {PredictAPI.getClass(predicted_class)['name']} - {round(predicted_certainty, 2)}"
+        app.logger.debug(f"Prediction for {img.filename}:\n\n {results}")
+
+        # Return prediction tuple
+        return predicted_class, predicted_certainty
 
     @staticmethod
     def getClass(prediction: int):
